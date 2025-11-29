@@ -48,21 +48,36 @@ body {
 .user-info {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     padding: 15px;
     background: rgba(0, 212, 255, 0.1);
     border-radius: 10px;
     border: 1px solid rgba(0, 212, 255, 0.3);
 }
 
-.user-info .label {
-    color: rgba(255, 255, 255, 0.7);
+.user-info .user-avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    border: 2px solid rgba(0, 212, 255, 0.5);
 }
 
-.user-info .value {
-    color: #00d4ff;
-    font-weight: bold;
+.user-info .user-details {
     flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.user-info .username {
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.1rem;
+}
+
+.user-info .user-id {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 0.85rem;
     word-break: break-all;
 }
 

@@ -20,6 +20,8 @@ const API_BASE = '';
 // BIEN TOAN CUC
 // ============================================
 let currentUserId = null; // Luu user ID hien tai
+let currentUsername = null; // Luu username hien tai
+let currentAvatar = null; // Luu avatar URL hien tai
 
 // ============================================
 // KHOI TAO KHI TRANG LOAD
@@ -35,25 +37,45 @@ document.addEventListener('DOMContentLoaded', () => {
  * - Neu khong thi lay tu localStorage
  * - Hien thi giao dien phu hop
  */
-function initApp() {
+async function initApp() {
     // Lay user ID tu URL (khi user click link tu Discord)
     const urlParams = new URLSearchParams(window.location.search);
     const userIdFromUrl = urlParams.get('uid');
+    const usernameFromUrl = urlParams.get('username');
+    const avatarFromUrl = urlParams.get('avatar');
     
     if (userIdFromUrl) {
         // Luu vao localStorage de giu lai khi reload
         localStorage.setItem('discord_user_id', userIdFromUrl);
         currentUserId = userIdFromUrl;
+        
+        // Neu co username va avatar tu URL thi luu luon
+        if (usernameFromUrl) {
+            localStorage.setItem('discord_username', usernameFromUrl);
+            currentUsername = usernameFromUrl;
+        }
+        if (avatarFromUrl) {
+            localStorage.setItem('discord_avatar', decodeURIComponent(avatarFromUrl));
+            currentAvatar = decodeURIComponent(avatarFromUrl);
+        }
+        
+        // Neu chua co username/avatar, thu fetch tu API
+        if (!currentUsername || !currentAvatar) {
+            await fetchUserInfo(userIdFromUrl);
+        }
+        
         // Xoa param khoi URL cho sach
         window.history.replaceState({}, document.title, window.location.pathname);
     } else {
         // Lay tu localStorage
         currentUserId = localStorage.getItem('discord_user_id');
+        currentUsername = localStorage.getItem('discord_username') || null;
+        currentAvatar = localStorage.getItem('discord_avatar') || null;
     }
 
     // Hien thi giao dien phu hop
     if (currentUserId) {
-        showUserInfo(currentUserId);
+        showUserInfo(currentUserId, currentUsername, currentAvatar);
         showNaptheForm();
     } else {
         showUserForm();
@@ -78,10 +100,39 @@ function initApp() {
 /*
  * Hien thi thong tin user da chon
  */
-function showUserInfo(userId) {
+function showUserInfo(userId, username, avatar) {
     document.getElementById('user-info').classList.remove('hidden');
     document.getElementById('user-form').classList.add('hidden');
     document.getElementById('display-user-id').textContent = userId;
+    document.getElementById('display-username').textContent = username || 'Unknown';
+    document.getElementById('display-avatar').src = avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+}
+
+/*
+ * Fetch thong tin user tu API bang user ID
+ */
+async function fetchUserInfo(userId) {
+    try {
+        const response = await fetch(`${API_BASE}/api/get-user?uid=${encodeURIComponent(userId)}`);
+        const data = await response.json();
+        
+        if (data.success && data.user) {
+            currentUsername = data.user.username || null;
+            currentAvatar = data.user.avatar || null;
+            if (currentUsername) {
+                localStorage.setItem('discord_username', currentUsername);
+            } else {
+                localStorage.removeItem('discord_username');
+            }
+            if (currentAvatar) {
+                localStorage.setItem('discord_avatar', currentAvatar);
+            } else {
+                localStorage.removeItem('discord_avatar');
+            }
+        }
+    } catch (error) {
+        console.error('Loi khi lay thong tin user:', error);
+    }
 }
 
 /*
@@ -105,7 +156,11 @@ function showNaptheForm() {
  */
 function changeUser() {
     localStorage.removeItem('discord_user_id');
+    localStorage.removeItem('discord_username');
+    localStorage.removeItem('discord_avatar');
     currentUserId = null;
+    currentUsername = null;
+    currentAvatar = null;
     showUserForm();
 }
 
@@ -161,8 +216,8 @@ function showSearchResults(users) {
             <span class="name">${user.username}</span>
             <span class="id">${user.id}</span>
         `;
-        // Click de chon user nay
-        item.addEventListener('click', () => selectUser(user.id));
+        // Click de chon user nay - truyen them username va avatar
+        item.addEventListener('click', () => selectUser(user.id, user.username, user.avatar));
         container.appendChild(item);
     });
 }
@@ -170,10 +225,22 @@ function showSearchResults(users) {
 /*
  * Chon user tu ket qua tim kiem
  */
-function selectUser(userId) {
+function selectUser(userId, username, avatar) {
     localStorage.setItem('discord_user_id', userId);
+    if (username) {
+        localStorage.setItem('discord_username', username);
+    } else {
+        localStorage.removeItem('discord_username');
+    }
+    if (avatar) {
+        localStorage.setItem('discord_avatar', avatar);
+    } else {
+        localStorage.removeItem('discord_avatar');
+    }
     currentUserId = userId;
-    showUserInfo(userId);
+    currentUsername = username || null;
+    currentAvatar = avatar || null;
+    showUserInfo(userId, username, avatar);
     showNaptheForm();
     document.getElementById('search-results').classList.add('hidden');
 }
