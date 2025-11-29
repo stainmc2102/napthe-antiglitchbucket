@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nap The - Word Connect Bot</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <!-- Header -->
+            <div class="header">
+                <h1>Nap The</h1>
+                <p>Word Connect Bot</p>
+            </div>
+
+            <!-- Phan hien thi User ID hoac form nhap username -->
+            <div id="user-section" class="section">
+                <!-- Hien thi khi da co user ID -->
+                <div id="user-info" class="user-info hidden">
+                    <span class="label">User ID:</span>
+                    <span id="display-user-id" class="value"></span>
+                    <button id="change-user" class="btn-small">Doi</button>
+                </div>
+                <!-- Form nhap username khi chua co user ID -->
+                <div id="user-form" class="hidden">
+                    <p>Nhap Discord Username de tiep tuc:</p>
+                    <div class="input-group">
+                        <input type="text" id="username-input" placeholder="username#1234 hoac username">
+                        <button id="search-user" class="btn">Tim</button>
+                    </div>
+                    <p id="search-error" class="error hidden"></p>
+                    <div id="search-results" class="search-results hidden"></div>
+                </div>
+            </div>
+
+            <!-- Form nap the chinh -->
+            <div id="napthe-form" class="section hidden">
+                <!-- Chon nha mang -->
+                <div class="form-group">
+                    <label for="nhamang">Nha mang</label>
+                    <select id="nhamang">
+                        <option value="VIETTEL">Viettel</option>
+                        <option value="MOBIFONE">Mobifone</option>
+                        <option value="VINAPHONE">Vinaphone</option>
+                        <option value="VIETNAMOBILE">Vietnamobile</option>
+                        <option value="ZING">Zing</option>
+                        <option value="GATE">Gate</option>
+                        <option value="GARENA">Garena</option>
+                    </select>
+                </div>
+
+                <!-- Chon menh gia -->
+                <div class="form-group">
+                    <label for="menhgia">Menh gia</label>
+                    <select id="menhgia">
+                        <option value="10000">10,000 VND</option>
+                        <option value="20000">20,000 VND</option>
+                        <option value="30000">30,000 VND</option>
+                        <option value="50000">50,000 VND</option>
+                        <option value="100000">100,000 VND</option>
+                        <option value="200000">200,000 VND</option>
+                        <option value="300000">300,000 VND</option>
+                        <option value="500000">500,000 VND</option>
+                        <option value="1000000">1,000,000 VND</option>
+                    </select>
+                </div>
+
+                <!-- Nhap so seri -->
+                <div class="form-group">
+                    <label for="seri">So Seri</label>
+                    <input type="text" id="seri" placeholder="Nhap so seri the">
+                </div>
+
+                <!-- Nhap ma the -->
+                <div class="form-group">
+                    <label for="mathe">Ma the</label>
+                    <input type="text" id="mathe" placeholder="Nhap ma the cao">
+                </div>
+
+                <!-- Nhap voucher (khong bat buoc) -->
+                <div class="form-group">
+                    <label for="voucher">Voucher (tuy chon)</label>
+                    <input type="text" id="voucher" placeholder="Nhap ma voucher neu co">
+                </div>
+
+                <!-- Nut nap the -->
+                <button id="submit-btn" class="btn btn-primary">Nap The</button>
+
+                <!-- Hien thi ket qua -->
+                <div id="result" class="result hidden"></div>
+            </div>
+
+            <!-- Loading spinner -->
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Dang xu ly...</p>
+            </div>
+        </div>
+
+        <!-- Lich su nap the -->
+        <div class="history-card">
+            <h2>Lich su nap the</h2>
+            <div id="history-list" class="history-list">
+                <p class="empty">Chua co giao dich nao</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
